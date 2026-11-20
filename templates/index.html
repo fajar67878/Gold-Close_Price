@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TA-04 | Peramalan Harga Emas (LSTM)</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #fefce8; color: #1e293b; margin: 0; padding: 2rem; }
+        .container { max-width: 960px; margin: auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-top: 5px solid #ca8a04; }
+        h1 { margin-top: 0; color: #854d0e; }
+        .badge { display: inline-block; background: #fef9c3; color: #854d0e; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 600; margin-bottom: 1rem; }
+        form { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+        select, button { padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; }
+        button { background: #ca8a04; color: #fff; border: none; cursor: pointer; font-weight: 600; }
+        button:hover { background: #a16207; }
+        img { width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #fefce8; color: #854d0e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Peramalan Harga Penutupan Emas (LSTM)</h1>
+        <div class="badge">Data Terakhir ({{ last_date }}): {{ last_close }}</div>
+        
+        <form method="POST">
+            <label for="days">Rentang Peramalan:</label>
+            <select name="days" id="days">
+                <option value="3" {% if days == 3 %}selected{% endif %}>3 Hari ke Depan</option>
+                <option value="7" {% if days == 7 %}selected{% endif %}>7 Hari ke Depan</option>
+                <option value="14" {% if days == 14 %}selected{% endif %}>14 Hari ke Depan</option>
+                <option value="30" {% if days == 30 %}selected{% endif %}>30 Hari ke Depan</option>
+            </select>
+            <button type="submit">Prediksi Harga</button>
+        </form>
+
+        <img src="data:image/png;base64,{{ plot_url }}" alt="Grafik Prediksi Harga Emas">
+
+        <h3>Tabel Hasil Peramalan Harga Penutupan Emas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal Prediksi</th>
+                    <th>Estimasi Harga Penutupan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in forecast_table %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td><strong>{{ row.value }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
